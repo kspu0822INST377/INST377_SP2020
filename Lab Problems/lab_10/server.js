@@ -46,6 +46,7 @@ app.route('/api')
   .get((req, res) => {processDataForFrontEnd(req, res)})
   .post((req, res) => {
     console.log("/api post request", req.body);
+    res.send('your request was successful'); // simple mode
   })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
