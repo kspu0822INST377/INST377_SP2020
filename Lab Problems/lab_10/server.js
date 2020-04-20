@@ -39,11 +39,6 @@ function processDataForFrontEnd(req, res) {
       });
 }
 
-// This is our first route on our server.
-// To access it, we can use a "GET" request on the front end
-// by typing in: localhost:3000/api or 127.0.0.1:3000/api
-app.get('/api', (req, res) => {processDataForFrontEnd(req, res)});
-
 // Syntax change - we don't want to repeat ourselves,
 // or we'll end up with spelling errors in our endpoints.
 // 
