@@ -11,38 +11,46 @@
           <h1>POST and PUT lab</h1>
         </div>
         <div>
-          <form class="form" id="labForm">
+          <form class="targetForm" id="labForm">
             <label for="name">Name</label>
-            <input type="text" id="name" name="name"/>
+            <input type="text" id="name" name="name" />
             <label for="interests">Interests</label>
-            <textarea id="interests" name="interests"
-                rows="5" cols="33"
-            >No default text here.
-            </textarea><br />
-            <button class="formBtn">Submit</button>
+            <textarea id="interests" name="interests" rows="5" cols="33">
+                Default text says what?
+            </textarea
+            ><br />
+            <button id="formBtn">Submit</button>
           </form>
         </div>
       </div>
     </div>
     <script>
-        function sendForm(e) {
-            e.preventDefault(); // this prevents your page reloading on button click
-            const formToSend = new FormData(document.querySelector("#labForm"));
-            fetch('/api', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(Object.fromEntries(formToSend))
-            })
-            .then((data) =>{
-                console.log(data);
-            })
+      function sendForm(e) {
+        e.preventDefault(); // this prevents your page reloading on button click
+        const target = document.querySelector("#labForm");
+        const btn = document.querySelector("#formBtn");
 
-        }
-        
-        const formBtn = document.querySelector('.formBtn');
-        formBtn.addEventListener('click', sendForm);
+        const formToSend = new FormData(target);
+
+        fetch("/api", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(Object.fromEntries(formToSend)),
+        })
+          .then((data) => data.text()) // note: we didn't send JSON, so there's no JSON to get.
+          .then((data) => {
+            console.log(data);
+            btn.setAttribute("disabled", true);
+            const br = document.createElement("br");
+            target.append(br);
+            target.append(`${data}`);
+          });
+      }
+
+      const formBtn = document.querySelector("#formBtn");
+      formBtn.addEventListener("click", sendForm);
     </script>
   </body>
 </html>
