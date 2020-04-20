@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Methods - Post and Put Lab</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <div>
+          <h1>POST and PUT lab</h1>
+        </div>
+        <div>
+          <form class="form" id="labForm">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name"/>
+            <label for="interests">Interests</label>
+            <textarea id="interests" name="interests"
+                rows="5" cols="33"
+            >No default text here.
+            </textarea><br />
+            <button class="formBtn">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+        function sendForm(e) {
+            e.preventDefault(); // this prevents your page reloading on button click
+            const formToSend = new FormData(document.querySelector("#labForm"));
+            fetch('/api', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(Object.fromEntries(formToSend))
+            })
+            .then((data) =>{
+                console.log(data);
+            })
+
+        }
+        
+        const formBtn = document.querySelector('.formBtn');
+        formBtn.addEventListener('click', sendForm);
+    </script>
+  </body>
+</html>
