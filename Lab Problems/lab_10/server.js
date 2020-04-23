@@ -8,21 +8,18 @@ import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import writeUser from './libraries/writeuser';
 
+
+const dbSettings = {
+  filename: './tmp/database.db',
+  driver: sqlite3.Database
+}; 
+
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
-
-// this is new! It's an asynchronous function. We need plugins to use it, and it's not safe for the front end.
-async function databaseBoot() {
-  console.log('async DB boot');
-  const db = await open({
-    filename: '/tmp/database2.db',
-    driver: sqlite3.Database
-  })
-};
 
 
 function processDataForFrontEnd(req, res) {
@@ -48,19 +45,29 @@ function processDataForFrontEnd(req, res) {
 // 
 app.route('/api')
   .get((req, res) => {
-    processDataForFrontEnd(req, res)
+    // processDataForFrontEnd(req, res)
+    (async()=> {
+      const db = await open(dbSettings)
+      const result = await db.each('SELECT * FROM user');
+      console.log('Expected result', result);
+      res.json(result);
+    })()
   })
   .post((req, res) => {
     console.log("/api post request", req.body);
     if(!req.body.name){
+      console.log(req.body);
       res.status('418').send('something went wrong, additionally i am a teapot')
+    } else {
+      writeUser(req.body.name, dbSettings)
+      .then((result) => {
+        console.log(result);
+        res.send('your request was successful'); // simple mode
+      })
     }
-    writeUser(req.body.name);
-    res.send('your request was successful'); // simple mode
   })
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`)
-  databaseBoot();
 });
 
