@@ -1,13 +1,14 @@
-async function writeUser(username) {
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
+
+async function writeUser(username, dbSettings) {
     console.log(`touched username ${username}`);
-    const db = await open({
-      filename: '/tmp/database3.db',
-      driver: sqlite3.Database
-    })
+    const db = await open(dbSettings)
     await db.exec('CREATE TABLE IF NOT EXISTS user (name)');
     await db.exec(`INSERT INTO user VALUES ("${username}")`);
-    const result = await db.get('SELECT * FROM user');
+    const result = await db.each('SELECT * FROM user');
     console.log('Expected result', result);
+    return result;
   }
   
-  module.exports.writeUser = writeUser;
+  export default writeUser;
